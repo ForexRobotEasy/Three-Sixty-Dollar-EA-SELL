@@ -1,0 +1,73 @@
+
+// Three Sixty Dollar EA SELL
+// Developer's site: forexroboteasy.com
+// Developer: Forex Robot Easy Team
+
+// Import necessary libraries
+#include <Trade\Trade.mqh>
+
+// Define the trade management class
+class TradeManagement
+{
+private:
+    CTrade m_trade; // Trade object
+
+public:
+    // Function to open a trade
+    void OpenTrade()
+    {
+        // Get the current tick sequence
+        MqlTick tick;
+        if (!SymbolInfoTick(_Symbol, tick))
+            return;
+
+        // Check if the current tick is suitable for opening a trade
+        if (tick.ask < tick.bid)
+        {
+            // Select a candlestick position for opening the trade
+            int position = SelectCandlestickPosition();
+
+            // Open a trade at the selected position
+            m_trade.Buy(0.01, Symbol(), position, tick.ask, 0, 0, 'Three Sixty Dollar EA SELL');
+        }
+    }
+
+    // Function to select a candlestick position
+    int SelectCandlestickPosition()
+    {
+        // TODO: Implement the logic for selecting the candlestick position
+        // Example: return iBarShift(_Symbol, PERIOD_H1, Time[0]);
+        return 0;
+    }
+
+    // Function to close all trades
+    void CloseAllTrades()
+    {
+        // Close all trades at the optimal point
+        m_trade.PositionCloseAll();
+    }
+};
+
+// Create an instance of the trade management class
+TradeManagement tradeManagement;
+
+// Start function - called when the script is started
+void OnStart()
+{
+    // Open a trade every tick
+    EventSetTimer(1);
+}
+
+// Timer function - called on each tick
+void OnTimer()
+{
+    // Open a trade
+    tradeManagement.OpenTrade();
+}
+
+// Deinit function - called when the script is stopped
+void OnDeinit(const int reason)
+{
+    // Close all trades
+    tradeManagement.CloseAllTrades();
+}
